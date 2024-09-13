@@ -3,6 +3,11 @@ A powerful wrapping alternative for Nix/OS.
 
 The main goal of this is to provide isolated filesystems powered by Bubblewrap that keep program configurations. This provides a cleaner home alongside a more pure and isolated approach to configuration.
 
+## Table Of Contents
+- [Installing](#installing)
+- [Usage](#usage)
+- [License](#license)
+
 ## Installing
 1. Add `nix-wrap` to your flake inputs and `nix-wrap.nixosModules.default` to your configuration(s):
 ```nix
@@ -53,6 +58,9 @@ The main goal of this is to provide isolated filesystems powered by Bubblewrap t
 }
 ```
 2. Run your program via `<name>-wrapper`. The above example would be run via `my-app-wrapper`, which will drop you into a bwrap that exists immediately when the program closes.
+
+> [!NOTE]
+> For testing purposes this flake exposes two wrapped applications, `wrapped-bash` and `wrapped-fastfetch`. Test them via `nix run github:Frontear/nix-wrap#wrapped-bash` or `nix run github:Frontear/nix-wrap#wrapped-fastfetch`.
 
 ## License
 All code in this project is licensed under the MIT License. This was an intentional choice to hopefully ease integration into [nixpkgs](https://github.com/NixOS/nixpkgs).
