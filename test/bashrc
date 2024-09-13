@@ -1,0 +1,1 @@
+PS1="(in-bwrap) $PS1"

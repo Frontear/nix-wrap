@@ -4,6 +4,6 @@
 {
   imports = [
     ./devShells
-    ./packages
+    ./nixosModules
   ];
 }
