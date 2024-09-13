@@ -5,5 +5,6 @@
   imports = [
     ./devShells
     ./nixosModules
+    ./packages
   ];
 }

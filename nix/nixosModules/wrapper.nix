@@ -35,7 +35,7 @@ writeShellApplication {
       --dev-bind /sys /sys
       "''${ro_mounts[@]}"
       "''${hm_mounts[@]}"
-      bash
+      ${lib.getExe program}
     )
 
     exec "''${cmd[@]}"
