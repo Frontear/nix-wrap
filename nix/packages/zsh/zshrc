@@ -1,0 +1,3 @@
+autoload -U promptinit && promptinit && prompt redhat && setopt prompt_sp
+
+PS1="(in-bwrap) $PS1"

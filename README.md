@@ -60,7 +60,6 @@ The main goal of this is to provide isolated filesystems powered by Bubblewrap t
 2. Run your program via `<name>-wrapper`. The above example would be run via `my-app-wrapper`, which will drop you into a bwrap that exists immediately when the program closes.
 
 > [!NOTE]
-> For testing purposes this flake exposes two wrapped applications, `wrapped-bash` and `wrapped-fastfetch`. Test them via `nix run github:Frontear/nix-wrap#wrapped-bash` or `nix run github:Frontear/nix-wrap#wrapped-fastfetch`.
-
+> For testing purposes this flake exposes a few wrapped applications. Check them out and run them using `nix run .#wrapped-<name>`!
 ## License
 All code in this project is licensed under the MIT License. This was an intentional choice to hopefully ease integration into [nixpkgs](https://github.com/NixOS/nixpkgs).

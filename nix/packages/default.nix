@@ -12,10 +12,14 @@
         self.nixosModules.default
         ./bash
         ./fastfetch
+        ./zsh
       ];
     }).config.wrappers;
   in {
-    packages.wrapped-bash = wrappers.bash.package;
-    packages.wrapped-fastfetch = wrappers.fastfetch.package;
+    packages = {
+      wrapped-bash = wrappers.bash.package;
+      wrapped-fastfetch = wrappers.fastfetch.package;
+      wrapped-zsh = wrappers.zsh.package;
+    };
   };
 }
