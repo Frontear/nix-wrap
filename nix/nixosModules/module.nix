@@ -4,24 +4,6 @@
   ...
 }:
 let
-  pathsSubmodule = {
-    options = {
-      src = lib.mkOption {
-        default = null;
-        description = "todo";
-
-        type = with lib.types; path;
-      };
-
-      dest = lib.mkOption {
-        default = null;
-        description = "todo";
-
-        type = with lib.types; str;
-      };
-    };
-  };
-
   wrappersSubmodule = ({ config, ... }: {
     options = {
       package = lib.mkOption {
@@ -42,7 +24,7 @@ let
         default = [];
         description = "todo";
 
-        type = with lib.types; listOf (submodule pathsSubmodule);
+        type = with lib.types; attrs;
       };
     };
 

@@ -8,7 +8,8 @@
 }:
 let
   homeExcludes = lib.pipe paths [
-    (map (p: p.dest))
+    lib.attrsToList
+    (map (p: p.name))
     (map (p: lib.splitString "/" p))
     (map (x: lib.elemAt x 0))
     (map (p: "$HOME/${p}"))
@@ -54,9 +55,9 @@ in writeShellApplication {
       --bind /nix /nix
       --remount-ro /nix/store
 
-      ${lib.concatStringsSep "\n" (lib.forEach paths (p:
-        ''--bind "${p.src}" "$HOME/${p.dest}"''
-      ))}
+      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (dest: src:
+        ''--bind "${src}" "$HOME/${dest}"''
+      ) paths)}
 
       "''${root_args[@]}"
       "''${home_args[@]}"

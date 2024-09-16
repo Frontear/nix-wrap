@@ -5,12 +5,8 @@
 {
   wrappers.bash = {
     program = pkgs.bash;
-
-    paths = [
-      {
-        src = ./bashrc;
-        dest = ".bashrc";
-      }
-    ];
+    paths = {
+      ".bashrc" = ./bashrc;
+    };
   };
 }
