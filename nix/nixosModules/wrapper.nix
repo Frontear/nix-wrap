@@ -6,35 +6,61 @@
   program,
   paths,
 }:
-writeShellApplication {
-  name = "${lib.getName program}-wrapper";
+let
+  homeExcludes = lib.pipe paths [
+    (map (p: p.dest))
+    (map (p: lib.splitString "/" p))
+    (map (x: lib.elemAt x 0))
+    (map (p: "$HOME/${p}"))
+    (lib.concatStringsSep " ")
+  ];
+in writeShellApplication {
+  name = "${lib.getName program}";
   runtimeInputs = [ bubblewrap ];
 
   text = ''
-    home="/home/$(whoami)"
+    declare -a root_args
+    declare -a home_args
 
-    declare -a ro_mounts
-    declare -a hm_mounts
+    # Mount all available entries in '/',
+    # ignoring a few that we specially handle.
+    for mnt in "/"*; do
+      if [[ ! "/dev /home /nix" =~ $mnt ]]; then
+        root_args+=(--bind "$mnt" "$mnt")
+      fi
+    done
 
-    while read -r mnt; do
-      ro_mounts+=(--ro-bind "$mnt" "$mnt")
-    done < <(find / -mindepth 1 -maxdepth 1 -type d -not -name "home" -a -not -name "dev" -a -not -name "sys")
-
-    ${lib.concatStringsSep "\n" (lib.forEach paths (p:
-      ''hm_mounts+=(--ro-bind "${p.src}" "$home/${p.dest}")''
-    ))}
+    # Mount all entries from paths into '$HOME'.
+    # TODO: this can get dangerously long and
+    # cause bwrap to fail.
+    # see: https://github.com/containers/bubblewrap/issues/413
+    for mnt in "$HOME"/{.*,*}; do
+      if [[ ! "${homeExcludes}" =~ $mnt ]]; then
+        home_args+=(--bind "$mnt" "$mnt")
+      else
+        for entry in "$mnt"/*; do
+          home_args+=(--bind "$entry" "$entry")
+        done
+      fi
+    done
 
     cmd=(
       bwrap
       --die-with-parent
-      --tmpfs "$home"
-      --dir "$home/.cache"
-      --dir "$home/.config"
-      --dir "$home/.local"
+
+      --tmpfs "$HOME"
+
       --dev-bind /dev /dev
-      --dev-bind /sys /sys
-      "''${ro_mounts[@]}"
-      "''${hm_mounts[@]}"
+      --bind /nix /nix
+      --remount-ro /nix/store
+
+      ${lib.concatStringsSep "\n" (lib.forEach paths (p:
+        ''--bind "${p.src}" "$HOME/${p.dest}"''
+      ))}
+
+      "''${root_args[@]}"
+      "''${home_args[@]}"
+
       ${lib.getExe program}
     )
 
